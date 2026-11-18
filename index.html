@@ -651,7 +651,7 @@ function sante3Info(o){const w=$("s3i");w.innerHTML="";if(!o)return;const add=(x
  add("Les formes des blocs de coin et du centre sont posées (sans la règle des ±5). Les couleurs et les autres cases sont à compléter.",1);
  if(n==4)add("Seules les 4 cases du centre sont données dans le document.",1);
  if(o.n==110)add("Spectre 1 : commence à la couleur 44 (couleurs 44 à 54). Spectre 2 : commence à la couleur 66 (couleurs 66 à 76).")}
-{const s=$("s3t");s.innerHTML='<option value="">— Choisir une grille —</option>'+SANTE3.map(o=>'<option value="'+o.n+'"'+(o.c?'':' disabled')+'>'+String(o.n).padStart(3,"0")+" · "+o.t+(o.c?"":" (à remplir)")+'</option>').join("");
+{const s=$("s3t");s.innerHTML='<option value="">— Choisir une grille —</option>'+SANTE3.slice().sort((x,y)=>x.t.localeCompare(y.t,"fr",{sensitivity:"base"})).map(o=>'<option value="'+o.n+'"'+(o.c?'':' disabled')+'>'+o.t+" ("+String(o.n).padStart(3,"0")+")"+(o.c?"":" (à remplir)")+'</option>').join("");
  s.onchange=()=>{const o=SANTE3.find(x=>x.n==+s.value);if(!o)n3cur=0;sante3Info(o);if(o)sante3Apply(o)}}
 
 function clearGrid(){if(size=="sys"||size=="sce")return;n3reset();const g=grids[size];for(let i=0;i<g.length;i++){const it=g[i];if(it&&it.o){rootG.remove(it.o);if(it.lb)rootG.remove(it.lb)}g[i]=null}sel=null;gc=-1;mark();panel();info();view()}
