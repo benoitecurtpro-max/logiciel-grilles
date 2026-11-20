@@ -963,7 +963,7 @@ $("fond").dispatchEvent(new Event("change"));
 #dicw .dreg{display:grid;gap:6px}
 #dicw .dreg div{display:flex;flex-wrap:wrap;gap:6px;align-items:baseline}
 #dicw .dreg b{min-width:80px;font-size:13px}
-#dicw .dch{font-size:13px;border:1px solid var(--line);border-radius:999px;padding:1px 9px}
+#dicw .dch{font-size:13px;cursor:pointer;background:transparent;color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:1px 9px}
 #dicw .dal{border-radius:10px;padding:10px 14px;border:1px solid var(--line)}
 #dicw .dal.w{border-color:#e0594d}
 #dicw .dal.w b{color:#e0594d}
@@ -974,6 +974,10 @@ $("fond").dispatchEvent(new Event("change"));
 #dicw table{border-collapse:collapse;font-size:13px;width:100%}
 #dicw th,#dicw td{border:1px solid var(--line);padding:5px 7px;text-align:left;vertical-align:top}
 #dicw .dnote{font-size:12px;color:var(--mut)}
+#dicw .dtabs{display:flex;gap:6px;flex-wrap:wrap}
+#dicw .dthl{display:flex;flex-wrap:wrap;gap:6px}
+#dicw .dthl button{font-size:13px;padding:5px 10px}
+#dicw .dthg{display:grid;gap:6px}
 .dsw{display:inline-block;width:14px;height:14px;border-radius:3px;border:1px solid var(--line);vertical-align:-2px;margin-right:4px}
 </style>
 <script>
@@ -1014,7 +1018,7 @@ function parts(s,c){
  else if(bad.length)al='<div class="dal w"><b>Grilles de guérison</b><p>Ne pas utiliser cette couleur avec cette forme dans une grille '+bad.map(E).join(' ni dans une grille ')+'. Rappel du livre : '+IN(s.guer)+'</p></div>';
  else al=s.guer?'<div class="dal"><b>Grilles de guérison</b><p>Cette couleur ne fait pas partie des couleurs à éviter pour cette forme. Rappel du livre : '+IN(s.guer)+'</p></div>':'';
  return {C,said,bad,al}}
-function regs(s){return ['Excellent','Très bien','Bien'].map(k=>s.themes[k].length?'<div><b>'+k+'</b>'+s.themes[k].map(t=>'<span class="dch">'+E(t)+'</span>').join('')+'</div>':'').join('')}
+function regs(s){return ['Excellent','Très bien','Bien'].map(k=>s.themes[k].length?'<div><b>'+k+'</b>'+s.themes[k].map(t=>'<button class="dch" title="Voir toutes les formes pour ce thème">'+E(t)+'</button>').join('')+'</div>':'').join('')}
 window.dicUpdate=function(){
  const box=document.getElementById('dicsum');if(!box)return;
  const it=(typeof sel!=='undefined')?sel:null;
@@ -1037,13 +1041,22 @@ function render(){
  '<details><summary>Fiche complète de la forme '+s.n+'</summary><div class="dfi"><p class="dnote">'+E(s.data)+'</p>'+MD(s.body)+'</div></details>'}
 function open(){load(()=>{
  let ov=document.getElementById('dicov');
- if(!ov){ov=document.createElement('div');ov.id='dicov';ov.innerHTML='<div id="dicw" role="dialog" aria-modal="true" aria-labelledby="dict"><div class="dtop"><h2 id="dict">Dictionnaire des messages</h2><button id="dicx">Fermer</button></div><div class="dpick"><label>Forme<select id="dics"></select></label><label>Couleur<select id="dicc"></select></label></div><div id="dicres" style="display:grid;gap:14px"></div><p class="dnote">Tout vient des livres du niveau avancé (livre des formes, livre des couleurs). Quand le livre ne dit rien d’une association, le dictionnaire l’indique. Les indications de santé accompagnent un soin énergétique et ne remplacent jamais un avis ni un traitement médical.</p></div>';
+ if(!ov){ov=document.createElement('div');ov.id='dicov';ov.innerHTML='<div id="dicw" role="dialog" aria-modal="true" aria-labelledby="dict"><div class="dtop"><h2 id="dict">Dictionnaire des messages</h2><button id="dicx">Fermer</button></div><div class="dtabs" role="tablist"><button id="dtc" class="on" role="tab" aria-selected="true">Forme × couleur</button><button id="dtt" role="tab" aria-selected="false">Par thème</button></div><div id="dvc" style="display:grid;gap:14px"><div class="dpick"><label>Forme<select id="dics"></select></label><label>Couleur<select id="dicc"></select></label></div><div id="dicres" style="display:grid;gap:14px"></div></div><div id="dvt" style="display:grid;gap:14px" hidden><label>Thème<select id="dict2"></select></label><p class="dnote">Les formes sont classées comme dans le livre : excellentes, très bien ou bien pour ce thème. Les étoiles (*) et les « + » indiquent une forme encore plus puissante pour le thème. Touchez une forme pour lire son message dans la couleur choisie.</p><div id="dthr" style="display:grid;gap:14px"></div></div><p class="dnote">Tout vient des livres du niveau avancé (livre des formes, livre des couleurs). Quand le livre ne dit rien d’une association, le dictionnaire l’indique. Les indications de santé accompagnent un soin énergétique et ne remplacent jamais un avis ni un traitement médical.</p></div>';
   document.body.appendChild(ov);
   document.getElementById('dics').innerHTML=DIC.shapes.map(s=>'<option value="'+s.n+'">'+s.n+'. '+E(s.nom)+' — « '+E(s.surnom)+' »</option>').join('');
   document.getElementById('dicc').innerHTML=PAL.map(c=>'<option value="'+c.n+'">'+c.n+'. '+E(c.nom)+' — '+E(c.mot)+'</option>').join('');
   document.getElementById('dics').onchange=e=>{dS=+e.target.value;render()};
   document.getElementById('dicc').onchange=e=>{dC=+e.target.value;render()};
   document.getElementById('dicx').onclick=()=>{ov.hidden=true};
+  const TK=t=>t.replace(/\\?\*|\+|\s*\(.*\)/g,'').trim();
+  const all=new Map();DIC.shapes.forEach(x=>Object.values(x.themes).flat().forEach(t=>{const k=TK(t);if(k)all.set(NO(k),k.charAt(0).toUpperCase()+k.slice(1))}));
+  const ts=document.getElementById('dict2');ts.innerHTML=[...all.values()].sort((a,b)=>a.localeCompare(b,'fr')).map(t=>'<option>'+E(t)+'</option>').join('');
+  const rt=()=>{const th=NO(ts.value);document.getElementById('dthr').innerHTML=['Excellent','Très bien','Bien'].map(k=>{const L=DIC.shapes.filter(x=>x.themes[k].some(t=>NO(TK(t))===th));if(!L.length)return '';return '<div class="dthg"><div class="dey">'+k+' pour « '+E(ts.value)+' »</div><div class="dthl">'+L.map(x=>{const t=x.themes[k].find(t=>NO(TK(t))===th);const st=t.replace(TK(t),'').replace(/\\/g,'').trim();return '<button data-s="'+x.n+'">'+x.n+'. '+E(x.surnom)+(st?' <b>'+E(st)+'</b>':'')+'</button>'}).join('')+'</div></div>'}).join('')};
+  ts.onchange=rt;rt();
+  const tab=w=>{const c=w==='c';document.getElementById('dvc').hidden=!c;document.getElementById('dvt').hidden=c;['dtc','dtt'].forEach((id,i)=>{const on=(i===0)===c;const b=document.getElementById(id);b.classList.toggle('on',on);b.setAttribute('aria-selected',on)})};
+  document.getElementById('dtc').onclick=()=>tab('c');document.getElementById('dtt').onclick=()=>tab('t');
+  document.getElementById('dthr').addEventListener('click',e=>{const b=e.target.closest('button[data-s]');if(b){dS=+b.dataset.s;document.getElementById('dics').value=dS;render();tab('c');document.getElementById('dicw').scrollIntoView()}});
+  document.getElementById('dicres').addEventListener('click',e=>{const b=e.target.closest('.dch');if(b){const k=TK(b.textContent);const o=[...ts.options].find(o=>NO(o.text)===NO(k));if(o){ts.value=o.text;rt();tab('t')}}});
   ov.addEventListener('click',e=>{if(e.target===ov)ov.hidden=true});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!ov.hidden)ov.hidden=true})}
  ov.hidden=false;document.getElementById('dics').value=dS;document.getElementById('dicc').value=dC;render();document.getElementById('dicx').focus()})}
