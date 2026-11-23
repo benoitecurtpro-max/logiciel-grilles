@@ -185,6 +185,7 @@ const types=id=>[...new Set(geo(id).map(f=>f.length))].sort((a,b)=>a-b);
 const fill=(s,c)=>Object.keys(c).length?c:Object.fromEntries(types(s).map(t=>[t,brush]));
 const tc=new THREE.Color();
 function paint(it){const ge=it.o.userData.ge,a=ge.attributes.color,t2f=ge.userData.t2f,F=geo(it.s);
+ if(!it.c)it.c={};{const mv=Object.values(it.c).find(v=>v!=null);if(mv!=null)types(it.s).forEach(t=>{if(it.c[t]==null)it.c[t]=mv})}
  for(let k=0;k<t2f.length;k++){const i=t2f[k],n=(it.f&&it.f[i])||it.c[F[i].length]||DEF[F[i].length]||1;tc.set(HX(n));for(let v=0;v<3;v++)a.setXYZ(k*3+v,tc.r,tc.g,tc.b)}a.needsUpdate=true;if(it.lb&&it.cell!==undefined)relab(it);const L=it.o.userData.ln;if(L){const n=(it.f&&it.f[0])||it.c[F[0].length]||DEF[F[0].length]||1;L.material.color.set(PAL[n-1].hex)}}
 function make(it){const F=geo(it.s),g=new THREE.Group(),p=[],t2f=[];
  F.forEach((f,i)=>{for(let j=1;j<f.length-1;j++){p.push(...f[0],...f[j],...f[j+1]);t2f.push(i)}});
@@ -198,15 +199,15 @@ function make(it){const F=geo(it.s),g=new THREE.Group(),p=[],t2f=[];
  ge.userData.t2f=t2f;
  const bb=!!SH.find(x=>x.id==it.s).bb;
  if(bb)g.add(new THREE.Mesh(ge,new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.DoubleSide})));
- else if(sm)g.add(new THREE.Mesh(ge,new THREE.MeshPhongMaterial({vertexColors:true,side:THREE.DoubleSide,flatShading:false,shininess:60})));
- else g.add(new THREE.Mesh(ge,new THREE.MeshPhongMaterial({vertexColors:true,side:THREE.DoubleSide,flatShading:true,shininess:30})),new THREE.LineSegments(new THREE.EdgesGeometry(ge,1),new THREE.LineBasicMaterial({color:0x1c1a20,transparent:true,opacity:.85})));
+ else if(sm)g.add(new THREE.Mesh(ge,new THREE.MeshPhongMaterial({vertexColors:true,side:THREE.DoubleSide,flatShading:false,shininess:60,specular:0x000000})));
+ else g.add(new THREE.Mesh(ge,new THREE.MeshPhongMaterial({vertexColors:true,side:THREE.DoubleSide,flatShading:true,shininess:30,specular:0x000000})),new THREE.LineSegments(new THREE.EdgesGeometry(ge,1),new THREE.LineBasicMaterial({color:0x1c1a20,transparent:true,opacity:.85})));
  g.userData={inst:it,ge,ln:null,bb:bb};it.o=g;paint(it);return g}
 const st=$("stage"),R=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});
 R.setPixelRatio(Math.min(devicePixelRatio,2));st.appendChild(R.domElement);
 const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(40,1,.1,200);
-sc.add(new THREE.AmbientLight(0xffffff,.55));
-const l1=new THREE.DirectionalLight(0xffffff,.8);l1.position.set(3,4,5);sc.add(l1);
-const l2=new THREE.DirectionalLight(0xffffff,.35);l2.position.set(-4,-2,-3);sc.add(l2);
+sc.add(new THREE.AmbientLight(0xffffff,.62));
+const l1=new THREE.DirectionalLight(0xffffff,.38);l1.position.set(3,4,5);sc.add(l1);
+const l2=new THREE.DirectionalLight(0xffffff,.2);l2.position.set(-4,-2,-3);sc.add(l2);
 const rootG=new THREE.Group(),rootF=new THREE.Group();sc.add(rootG,rootF);
 const INV=n=>n==145||n==147||n==148||n==152,HX=n=>PAL[n-1].hex,BG=n=>PAL[n-1].hex;
 let zm=1,pan=[0,0],footer="";try{footer=localStorage.getItem("piedPage")||""}catch(e){}
