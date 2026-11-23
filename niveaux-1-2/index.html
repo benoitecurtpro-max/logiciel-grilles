@@ -260,7 +260,7 @@ function buildGrid(){pan=[0,0];rootG.clear();markers=[];const[c,r]=dims();const 
  if(size==144)COLN.forEach((n,c)=>{const h=lab(n);h.position.set(c-5.5,6.35,0);rootG.add(h)});
  if(isP()){heads[size].forEach((n,c)=>{if(!n)return;const h=lab(n);h.position.set(c-3,3.85,0);rootG.add(h)});for(let r=0;r<7;r++){const h=lab(String(7-r));h.position.set(-4.05,3-r,0);h.scale.multiplyScalar(.6);rootG.add(h)}}
  mark()}
-function mark(){markers.forEach(m=>m.material.opacity=m.userData.cell==gc?.55:(m.userData.base||.12))}
+function mark(){const G=(mode=="grille"&&grids[size])||[];markers.forEach(m=>m.material.opacity=(m.userData.cell==gc&&!(typeof EXPO!="undefined"&&EXPO)&&!G[gc])?.55:(m.userData.base||.12))}
 function resize(){const w=st.clientWidth,h=st.clientHeight;R.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();view()}
 function view(){if(mode=="grille"){if(pm&&gc>=0){const p=cellPos(gc);cam.position.set(p[0],p[1],3.4)}else{const[c,r]=dims(),t=Math.tan(20*Math.PI/180);const e=size==144?1.2:isP()?.9:0,w=size==144?1.8:isP()?1.2:0,qb=ftrQ(),qt=zm>1?0:ttlQ(),z=Math.max((r+.4+e)/(1-qb-qt)/(2*t),(c+.4+w)/(2*t*cam.aspect))/zm;cam.position.set((size==144?.9:isP()?-.4:0)+pan[0],(size==144?.3:isP()?.25:0)+pan[1]-(qb-qt)*z*t,z)}}else cam.position.set(0,0,7)}
 function setMode(m){mode=m;sel=null;gc=-1;rootG.visible=m=="grille";rootF.visible=m=="libre";
@@ -290,7 +290,7 @@ function aide144(){const z=zone(gc),a=A(),it=grids[144][gc],out=["Case "+(gc+1)+
   if(v.length){const lo=Math.min(...v),hi=Math.max(...v);out.push("Couleurs utilisées : "+lo+" à "+hi+(hi>144?" ⚠ les spectres utilisent les couleurs 1 à 144.":hi-lo>10?" ⚠ plus de 11 couleurs d'écart.":" · permises : "+Math.max(1,hi-10)+" à "+Math.min(144,lo+10)+"."))}}
  else out.push("Case libre : formes et couleurs au choix.");
  return out.join("\n")}
-function info(){$("info").textContent=mode=="grille"?(gc<0?"Touchez un emplacement de la grille.":size==144?(isCorner(zone(gc))?"":aide144()):"Emplacement "+(gc+1)+(sel?" : forme "+nomOf(sel.s)+".":" : vide.")):(sel?"Forme "+nomOf(sel.s)+".":"Glissez le fond pour tourner la vue.");cbPanel()}
+function info(){mark();$("info").textContent=mode=="grille"?(gc<0?"Touchez un emplacement de la grille.":size==144?(isCorner(zone(gc))?"":aide144()):"Emplacement "+(gc+1)+(sel?" : forme "+nomOf(sel.s)+".":" : vide.")):(sel?"Forme "+nomOf(sel.s)+".":"Glissez le fond pour tourner la vue.");cbPanel()}
 function cbPanel(){const box=$("cb");if(!(mode=="grille"&&size==144&&gc>=0&&isCorner(zone(gc)))){box.hidden=true;$("bd").hidden=false;return}
  box.hidden=false;$("bd").hidden=true;box.innerHTML="";const add=(t,x)=>{const e=document.createElement(t);if(x)e.textContent=x;box.appendChild(e);return e},delBtn=()=>{const b=add("button","Retirer la forme sélectionnée");b.style.marginTop="8px";b.onclick=()=>$("del").click()};
  const pos=i=>COLN[i%12]+", ligne "+(Math.floor(i/12)+1),cell=grids[144][gc],oi=diag(gc),other=grids[144][oi];add("h2","Bloc de coin : règle ±5");
