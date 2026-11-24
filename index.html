@@ -331,7 +331,7 @@ function ftrUpd(){const f=$("ftr"),hid=!(footer||logo)||zm>1,k=footer+"|"+logo.l
  if(k!=fKey){fKey=k;f.textContent="";if(logo){const i=new Image();i.src=logo;i.alt="Logo";i.style.cssText="display:block;margin:0 auto 4px;height:"+logoH+"px;max-width:100%;object-fit:contain";f.appendChild(i)}
   if(footer){const d=document.createElement("div");d.textContent=footer;f.appendChild(d)}}
  f.hidden=hid}
-function expoLab(v){rootG.children.forEach(o=>{if(o.userData&&o.userData.nopr)o.visible=v});if(size==144)markers.forEach(m=>{m.visible=v})}
+function expoLab(v){rootG.children.forEach(o=>{if(o.userData&&o.userData.nopr)o.visible=v;if(o.userData&&o.userData.ol!==undefined)o.material.color.set(v?o.userData.ol:0x3a2760)});if(size==144)markers.forEach(m=>{m.visible=v})}
 let EXPO=false;const ttlQ=()=>{if(EXPO)return 0;const t=$("ttl");return t.textContent?Math.min(.3,(t.offsetHeight+20)/Math.max(1,st.clientHeight)):0};
 const ftrQ=()=>{ftrUpd();if(EXPO)return 0;const f=$("ftr");return f.hidden?0:Math.min(.4,(f.offsetHeight+16)/Math.max(1,st.clientHeight))};
 let mode="grille",size=49,grids={7:[],49:[],144:[],sys:[],sce:[],pers:[],stat:[]},free=[],cur={s:3,c:{}},sel=null,gc=-1,markers=[],brush=1,pm=false,titles={7:"",49:"",144:"",sys:"",sce:"",libre:"",pers:"Grille Personnelle de 7",stat:"Grille Stationnaire de 7"},heads={pers:Array(7).fill("Date"),stat:["Grille Personnelle",...Array(6).fill("Endroit / Objet")]};
@@ -349,7 +349,7 @@ function extR(id,r0,r1){const ca=Math.cos(r0),sa=Math.sin(r0),cb=Math.cos(r1),sb
 const EXT={};
 function ext(id){if(!EXT[id]){let x=0,y=0;geo(id).forEach(f=>f.forEach(p=>{x=Math.max(x,Math.abs(p[0]));y=Math.max(y,Math.abs(p[1]))}));EXT[id]=[Math.max(x,.001),Math.max(y,.001)]}return EXT[id]}
 function fitCell(it,a,b){let E=ext(it.s);if(it.r&&(it.r[0]||it.r[1])&&!(SH.find(x=>x.id==it.s)||{}).sm)E=extR(it.s,it.r[0],it.r[1]);const Lh=.36,sm=SH.find(x=>x.id==it.s).sm,k=(sm?Math.min(.44,(.92-Lh)/2):Math.min(.44/E[0],((.92-Lh)/2)/E[1]))*FIT;
- if(it.o){it.o.scale.setScalar(k);it.o.position.set(it.p[0],it.p[1]+((a||b||!(size==49||size==144))?Lh/2:0),it.p[2])}return Lh}
+ if(it.o){it.o.scale.setScalar(k);it.o.position.set(it.p[0],it.p[1]+((a||b)?Lh/2:0),it.p[2])}return Lh}
 let FIT=.9;try{const v=+localStorage.getItem("tailleAjust");if(v)FIT=v/100}catch(e){}
 function place(it,root){const o=make(it),g=it.cell!==undefined;o.position.set(it.p[0],it.p[1],it.p[2]);o.scale.setScalar(g?.3:it.k);o.rotation.set(it.r[0],it.r[1],0);if(it.q)o.quaternion.fromArray(it.q);root.add(o);
  if(root===rootG)relab(it)}
@@ -369,7 +369,7 @@ const zcol=i=>{const z=zone(i);if(z=="centre"){const r=Math.floor(i/12),c=i%12;r
  return ZC[z]||ZC.blanc};
 function buildGrid(){pan=[0,0];rootG.clear();markers=[];const[c,r]=dims();const dkT=(m=>!!m&&(m[0]*.3+m[1]*.59+m[2]*.11)<110)(getComputedStyle(document.getElementById("stage")).backgroundColor.match(/\d+/g)),LC=dkT?0xe3d4fa:0x3a2760;
  for(let i=0;i<c*r;i++){const m=new THREE.Mesh(new THREE.PlaneGeometry(.96,.96),new THREE.MeshBasicMaterial({color:size==144?zcol(i):0x8a6fb5,transparent:true,opacity:.2}));m.userData.base=size==144&&zone(i)!="blanc"?.45:.2;
-  m.position.set(...cellPos(i));m.position.z=-.05;m.userData.cell=i;rootG.add(m);markers.push(m);const ol=new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry),new THREE.LineBasicMaterial({color:LC,transparent:true,opacity:.9}));ol.position.copy(m.position);rootG.add(ol);
+  m.position.set(...cellPos(i));m.position.z=-.05;m.userData.cell=i;rootG.add(m);markers.push(m);const ol=new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry),new THREE.LineBasicMaterial({color:LC,transparent:true,opacity:.9}));ol.userData.ol=LC;ol.position.copy(m.position);rootG.add(ol);
   const it=grids[size][i];if(it)place(it,rootG)}
  if(markers.length){let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;markers.forEach(m=>{x0=Math.min(x0,m.position.x);x1=Math.max(x1,m.position.x);y0=Math.min(y0,m.position.y);y1=Math.max(y1,m.position.y)});[.48,.5].forEach(d=>{const g=new THREE.BufferGeometry().setFromPoints([[x0-d,y1+d],[x1+d,y1+d],[x1+d,y0-d],[x0-d,y0-d]].map(q=>new THREE.Vector3(q[0],q[1],-.04)));rootG.add(new THREE.LineLoop(g,new THREE.LineBasicMaterial({color:LC})))})}
  if(size==144){[[1,4,1,2.5],[2,-1,-4,-2.5]].forEach(([k,t,b,y])=>{const L=lab("Spectre "+k);L.userData.nopr=1;L.position.set(6.95,y,0);rootG.add(L);
@@ -858,7 +858,7 @@ function imgFallback(name,blob){name=(name||"grille-maya.png").replace(/[\u0000-
  mk("Fermer",()=>{o.remove();setTimeout(()=>URL.revokeObjectURL(url),60000)});o.appendChild(row);
  const im=document.createElement("img");im.src=url;im.alt=name;im.style.cssText="max-width:100%;height:auto;background:#fff;border-radius:6px";o.appendChild(im);document.body.appendChild(o)}
 async function dl(name,data){try{if(typeof data=="string"){if(data.startsWith("data:")){const b=atob(data.split(",")[1]),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);data=new Blob([u],{type:"image/png"})}else data=await (await fetch(data)).blob()}imgFallback(name,data)}catch(e){$("info").textContent="Le fichier n’a pas pu être enregistré."}}
-$("img").onclick=()=>{const z0=zm,p0=pan,pm0=pm,W=(mode=="grille"&&size==144)?2400:1600,u=W/1000,t=title(),bg=getComputedStyle(st).backgroundColor,fg=getComputedStyle(document.body).color;
+$("img").onclick=()=>{const z0=zm,p0=pan,pm0=pm,W=(mode=="grille"&&size==144)?2400:1600,u=W/1000,t=title(),bg="#ffffff",fg="#241c2b";
  const go0=im=>{let Hg;
   if(mode=="grille"){const[c0,r0]=dims(),e=size==144?0:isP()?.9:0,w=size==144?0:isP()?1.2:0;Hg=Math.round(W*(r0+.4+e)/(c0+.4+w))}else Hg=Math.round(W*st.clientHeight/Math.max(1,st.clientWidth));
   EXPO=true;mark();if(mode=="grille")grids[size].forEach(it=>it&&it.o&&relab(it));expoLab(false);R.setPixelRatio(mode=="grille"&&size==144?1:Math.min(devicePixelRatio,2));zm=1;pan=[0,0];pm=false;R.setSize(W,Hg,false);cam.aspect=W/Hg;cam.updateProjectionMatrix();view();R.render(sc,cam);
