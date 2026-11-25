@@ -838,15 +838,12 @@ st.addEventListener("pointerup",()=>{if(down&&down.it){const it=down.it;it.r=[it
  if(pm&&!down.moved&&down.hit&&!(it.cell!=null&&forbBlock(it.s,it.cell,[brush]))){const f=down.hit.object.geometry.userData.t2f[down.hit.faceIndex];it.f=it.f||{};it.f[f]=brush;paint(it);lastFace={it,f};btPanel()}}down=null});
 function fileFb(name,blob,url,D){let o=document.getElementById("imgfb");if(o)o.remove();
  o=document.createElement("div");o.id="imgfb";o.style.cssText="position:fixed;inset:0;z-index:9998;background:rgba(15,10,22,.94);color:#fff;display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px;font:15px/1.4 system-ui,sans-serif;overflow:auto";
- const p=document.createElement("p");p.style.cssText="margin:0;text-align:center;max-width:640px";p.textContent=typeof claude!="undefined"?"Votre fichier est prêt. Appuyez sur « Copier le contenu », puis collez-le dans le Bloc-notes (ou une application de notes) et enregistrez-le sous le nom "+name+". Vous pourrez le rouvrir avec « Ouvrir ».":"Votre fichier est prêt. Appuyez sur « Télécharger ». Si rien ne se passe : « Copier le contenu », collez-le dans le Bloc-notes (ou une application de notes) et enregistrez-le sous le nom "+name+". Vous pourrez le rouvrir avec « Ouvrir ».";o.appendChild(p);
+ const p=document.createElement("p");p.style.cssText="margin:0;text-align:center;max-width:640px";p.textContent="Votre fichier est prêt. Appuyez sur « Télécharger » : il sera enregistré dans vos téléchargements sous le nom "+name+". Vous pourrez le rouvrir avec « Ouvrir ».";o.appendChild(p);
  const row=document.createElement("div");row.style.cssText="display:flex;gap:8px;flex-wrap:wrap;justify-content:center";
  const mk=(t,f)=>{const b=document.createElement("button");b.textContent=t;b.style.cssText="padding:10px 18px;font-size:16px;border-radius:10px;border:0;background:#8a6fb5;color:#fff;cursor:pointer";b.onclick=f;row.appendChild(b);return b};
- const ta=document.createElement("textarea");ta.readOnly=true;ta.style.cssText="width:min(92vw,640px);height:40vh;font:12px monospace";
- blob.text().then(t=>{ta.value=t});
  if(typeof claude=="undefined")mk("Télécharger",()=>{const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove()});
- mk("Copier le contenu",()=>{ta.select();try{navigator.clipboard.writeText(ta.value).catch(()=>document.execCommand("copy"))}catch(e){try{document.execCommand("copy")}catch(x){}}});
  if(D&&typeof claude!="undefined")mk("Enregistrer via mon compte Claude",async()=>{try{const Q=await claude.use("downloads");await Q.save({filename:name,data:blob})}catch(e){}});
- mk("Fermer",()=>{o.remove();setTimeout(()=>URL.revokeObjectURL(url),60000)});o.appendChild(row);o.appendChild(ta);document.body.appendChild(o)}
+ mk("Fermer",()=>{o.remove();setTimeout(()=>URL.revokeObjectURL(url),60000)});o.appendChild(row);document.body.appendChild(o)}
 function imgFallback(name,blob){name=(name||"grille-maya.png").replace(/[\u0000-\u001f\\\/:*?"<>|]/g,"").replace(/[’‘']/g,"-").slice(0,80)||"grille-maya.png";
  const url=URL.createObjectURL(blob);if(blob.type&&blob.type.indexOf("image")!=0){fileFb(name,blob,url);return}let o=document.getElementById("imgfb");if(o)o.remove();
  o=document.createElement("div");o.id="imgfb";o.style.cssText="position:fixed;inset:0;z-index:9998;background:rgba(15,10,22,.94);color:#fff;display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px;font:15px/1.4 system-ui,sans-serif;overflow:auto";
