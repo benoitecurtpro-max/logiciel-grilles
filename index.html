@@ -186,15 +186,15 @@ const circ=(n,r,y)=>Array.from({length:n},(_,k)=>[r*Math.cos(2*Math.PI*k/n),y,r*
 const circX=(n,r,x)=>Array.from({length:n},(_,k)=>[x,r*Math.cos(2*Math.PI*k/n),r*Math.sin(2*Math.PI*k/n)]);
 const isoCube=()=>{const ex=[1/s2,-1/s2,0],ey=[1,1,1].map(x=>x/Math.sqrt(3)),ez=[-1,-1,2].map(x=>x/Math.sqrt(6));return gen([1,1,1],perms3).map(v=>[dot(v,ex),dot(v,ey),dot(v,ez)])};
 const tor=()=>{const nu=48,nv=24,R=1,r=.45,P=(i,j)=>{const u=2*Math.PI*i/nu,v=2*Math.PI*j/nv;const x=(R+r*Math.cos(v))*Math.cos(u),y=r*Math.sin(v),z=(R+r*Math.cos(v))*Math.sin(u),ca=Math.cos(Math.PI/2),sa=Math.sin(Math.PI/2);return[x,y*ca-z*sa,y*sa+z*ca]},F=[];for(let i=0;i<nu;i++)for(let j=0;j<nv;j++)F.push([P(i,j),P(i+1,j),P(i+1,j+1),P(i,j+1)]);return F};
-const dbl=()=>{const F=[],n=72,T=2.5,H=1.6,r=.45,w=.1;for(const s of[0,Math.PI])for(let i=0;i<n;i++){const P=k=>{const t=k/n,a=2*Math.PI*T*t+s,y=(t-.5)*2*H;return[[r*Math.cos(a),y-w,r*Math.sin(a)],[r*Math.cos(a),y+w,r*Math.sin(a)]]},A=P(i),B=P(i+1);F.push([A[0],B[0],B[1],A[1]])}return F};
-const inf=()=>{const n=96,w=.13,h=.05,P=t=>[Math.cos(t),Math.sin(2*t)/2,.22*Math.sin(t)];
+const dbl=()=>{const F=[],n=72,T=2.5,H=1.6,r=.45,w=.14;for(const s of[0,Math.PI])for(let i=0;i<n;i++){const P=k=>{const t=k/n,a=2*Math.PI*T*t+s,y=(t-.5)*2*H;return[[r*Math.cos(a),y-w,r*Math.sin(a)],[r*Math.cos(a),y+w,r*Math.sin(a)]]},A=P(i),B=P(i+1);F.push([A[0],B[0],B[1],A[1]])}return F};
+const inf=()=>{const n=96,w=.17,h=.065,P=t=>[Math.cos(t),Math.sin(2*t)/2,.22*Math.sin(t)];
  const ring=i=>{const t=2*Math.PI*i/n,p=P(t),q=P(t+.001),d=[q[0]-p[0],q[1]-p[1]],l=Math.hypot(...d),nx=-d[1]/l,ny=d[0]/l;
   return[[p[0]+nx*w,p[1]+ny*w,p[2]+h],[p[0]-nx*w,p[1]-ny*w,p[2]+h],[p[0]-nx*w,p[1]-ny*w,p[2]-h],[p[0]+nx*w,p[1]+ny*w,p[2]-h]]};
  const F=[];for(let i=0;i<n;i++){const A=ring(i),B=ring(i+1);for(let k=0;k<4;k++){const k2=(k+1)%4;F.push([A[k],A[k2],B[k2],B[k]])}}return F};
-const rays=()=>[[35,.5],[18,.3],[8,.55],[0,.25],[-10,.5],[-25,.3]].map(([d,L])=>{const a=d*Math.PI/180,c=Math.cos(a),s=Math.sin(a),w=.04,p0=[.8+1.1*c,1.1*s],p1=[.8+(1.1+L)*c,(1.1+L)*s];
+const rays=()=>[[35,.5],[18,.3],[8,.55],[0,.25],[-10,.5],[-25,.3]].map(([d,L])=>{const a=d*Math.PI/180,c=Math.cos(a),s=Math.sin(a),w=.06,p0=[.8+1.1*c,1.1*s],p1=[.8+(1.1+L)*c,(1.1+L)*s];
  return[[p0[0]-s*w,p0[1]+c*w,0],[p0[0]+s*w,p0[1]-c*w,0],[p1[0]+s*w,p1[1]-c*w,0],[p1[0]-s*w,p1[1]+c*w,0]]});
 SH.push(
-{id:"i1",g:1,bb:1,nom:"Sphère",mot:"",f:()=>{const n=96,a=.9,F=[];for(let k=0;k<n;k++){const t=2*Math.PI*k/n,u=2*Math.PI*(k+1)/n;F.push([[a*Math.cos(t),a*Math.sin(t),0],[Math.cos(t),Math.sin(t),0],[Math.cos(u),Math.sin(u),0],[a*Math.cos(u),a*Math.sin(u),0]])}return F}},
+{id:"i1",g:1,bb:1,nom:"Sphère",mot:"",f:()=>{const n=96,a=.8,F=[];for(let k=0;k<n;k++){const t=2*Math.PI*k/n,u=2*Math.PI*(k+1)/n;F.push([[a*Math.cos(t),a*Math.sin(t),0],[Math.cos(t),Math.sin(t),0],[Math.cos(u),Math.sin(u),0],[a*Math.cos(u),a*Math.sin(u),0]])}return F}},
 {id:"i2",g:1,nom:"Cône Focus",mot:"",v:()=>[...circX(32,.8,-.8),[.8,0,0]]},
 {id:"i3",g:1,nom:"Cône",mot:"",v:()=>[...circ(32,.8,.8),[0,-.8,0]]},
 {id:"i4",g:1,nom:"Cube",mot:"",v:isoCube},
@@ -331,7 +331,7 @@ function ftrUpd(){const f=$("ftr"),hid=!(footer||logo)||zm>1,k=footer+"|"+logo.l
  if(k!=fKey){fKey=k;f.textContent="";if(logo){const i=new Image();i.src=logo;i.alt="Logo";i.style.cssText="display:block;margin:0 auto 4px;height:"+logoH+"px;max-width:100%;object-fit:contain";f.appendChild(i)}
   if(footer){const d=document.createElement("div");d.textContent=footer;f.appendChild(d)}}
  f.hidden=hid}
-function expoLab(v){rootG.children.forEach(o=>{if(o.userData&&o.userData.nopr)o.visible=v;if(o.userData&&o.userData.ol!==undefined)o.material.color.set(v?o.userData.ol:0x3a2760)});if(size==144)markers.forEach(m=>{m.visible=v});else{markers.forEach(m=>{if(!v){m.material.color.set(0x6c7a99);m.material.opacity=.75}else m.material.color.set(0x8a6fb5)});if(v)mark()}}
+function expoLab(v){rootG.children.forEach(o=>{if(o.userData&&o.userData.nopr)o.visible=v;if(o.userData&&o.userData.ol!==undefined)o.material.color.set(v?o.userData.ol:0x3a2760)});if(size==144)markers.forEach(m=>{m.visible=v});}
 let EXPO=false;const ttlQ=()=>{if(EXPO)return 0;const t=$("ttl");return t.textContent?Math.min(.3,(t.offsetHeight+20)/Math.max(1,st.clientHeight)):0};
 const ftrQ=()=>{ftrUpd();if(EXPO)return 0;const f=$("ftr");return f.hidden?0:Math.min(.4,(f.offsetHeight+16)/Math.max(1,st.clientHeight))};
 let mode="grille",size=49,grids={7:[],49:[],144:[],sys:[],sce:[],pers:[],stat:[]},free=[],cur={s:3,c:{}},sel=null,gc=-1,markers=[],brush=1,pm=false,titles={7:"",49:"",144:"",sys:"",sce:"",libre:"",pers:"Grille Personnelle de 7",stat:"Grille Stationnaire de 7"},heads={pers:Array(7).fill("Date"),stat:["Grille Personnelle",...Array(6).fill("Endroit / Objet")]};
