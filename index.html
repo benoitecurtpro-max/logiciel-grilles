@@ -866,13 +866,14 @@ $("img").onclick=()=>{const z0=zm,p0=pan,pm0=pm,W=(mode=="grille"&&size==144)?24
   const ih=im?Math.round(Math.min(logoH,90)*u*.8):0,iw=im?Math.round(im.width*ih/im.height):0,lic=window.LICN?Math.round(24*u):0;
   const fh=(im?ih+Math.round(8*u):0)+(FL.length?FL.length*fl+Math.round(12*u):0)+Math.round(8*u)+lic;
   const LS=!!($("land")&&$("land").checked)&&mode=="grille"&&(size==49||size==144);
-  if(LS){const CW=Math.round(W*1.414),CH=W,TLw=t?wrap(t,"600 "+tfs+"px Georgia,serif",CW-80*u):[],th2=t?Math.round(14*u)+TLw.length*tl+Math.round(8*u):Math.round(8*u),FLw=footer?wrap(footer,ffs+"px system-ui,sans-serif",CW-80*u):[],fh2=(im?ih+Math.round(8*u):0)+(FLw.length?FLw.length*fl+Math.round(12*u):0)+Math.round(8*u)+lic,G=CH-th2-fh2,Gh=Math.round(G*Hg/W);
+  if(LS){const CW=Math.round(W*1.414),CH=W,tf2=Math.round(17*u),tl2=Math.round(tf2*1.2),ff2=Math.round(9*u),fl2=Math.round(ff2*1.35),ih2=Math.round(ih*.6),iw2=Math.round(iw*.6),lic2=window.LICN?Math.round(16*u):0,
+   TLw=t?wrap(t,"600 "+tf2+"px Georgia,serif",CW-60*u):[],th2=t?Math.round(8*u)+TLw.length*tl2+Math.round(4*u):Math.round(6*u),FLw=footer?wrap(footer,ff2+"px system-ui,sans-serif",CW-60*u):[],fh2=(im?ih2+Math.round(4*u):0)+(FLw.length?FLw.length*fl2+Math.round(6*u):0)+Math.round(4*u)+lic2,G=CH-th2-fh2,Gh=Math.round(G*Hg/W);
    c.width=CW;c.height=CH;x.fillStyle=bg;x.fillRect(0,0,CW,CH);
-   x.fillStyle=fg;x.textAlign="center";x.font="600 "+tfs+"px Georgia,serif";TLw.forEach((ln,i)=>x.fillText(ln,CW/2,Math.round(14*u)+tfs+i*tl));
+   x.fillStyle=fg;x.textAlign="center";x.font="600 "+tf2+"px Georgia,serif";TLw.forEach((ln,i)=>x.fillText(ln,CW/2,Math.round(8*u)+tf2+i*tl2));
    x.drawImage(R.domElement,Math.round((CW-G)/2),th2,G,Gh);
-   let y=CH-fh2+Math.round(6*u);if(im){x.drawImage(im,(CW-iw)/2,y,iw,ih);y+=ih+Math.round(8*u)}
-   x.fillStyle=fg;x.font=ffs+"px system-ui,sans-serif";x.textAlign="center";FLw.forEach((ln,i)=>x.fillText(ln,CW/2,y+ffs+i*fl));
-   if(window.LICN){x.font=Math.round(11*u)+"px system-ui,sans-serif";x.textAlign="right";x.globalAlpha=.6;x.fillText("Licence : "+window.LICN,CW-Math.round(10*u),CH-Math.round(7*u));x.globalAlpha=1}
+   let y=CH-fh2+Math.round(3*u);if(im){x.drawImage(im,(CW-iw2)/2,y,iw2,ih2);y+=ih2+Math.round(4*u)}
+   x.fillStyle=fg;x.font=ff2+"px system-ui,sans-serif";x.textAlign="center";FLw.forEach((ln,i)=>x.fillText(ln,CW/2,y+ff2+i*fl2));
+   if(window.LICN){x.font=Math.round(9*u)+"px system-ui,sans-serif";x.textAlign="right";x.globalAlpha=.6;x.fillText("Licence : "+window.LICN,CW-Math.round(8*u),CH-Math.round(5*u));x.globalAlpha=1}
   }else{
   c.width=W;c.height=th+Hg+fh;x.fillStyle=bg;x.fillRect(0,0,W,c.height);
   x.fillStyle=fg;x.textAlign="center";x.font="600 "+tfs+"px Georgia,serif";TL.forEach((ln,i)=>x.fillText(ln,W/2,Math.round(14*u)+tfs+i*tl));
